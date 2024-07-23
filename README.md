@@ -57,3 +57,7 @@ Dagster Software-Defined Asset (DSA)
 def cookie_dough(dry_ingredients, wet_ingredients):
     return dry_ingredients + wet_ingredients
 ```
+
+Defined my first asset. Looks like the E part of ELT. 
+
+After defining the asset in code, you need to materialize it to run the assets function and creates the asset by persisting results in storage
