@@ -1,8 +1,11 @@
 import requests
 from . import constants
 from dagster import asset 
+import duckdb
+import os
 
 # comments for myself its been awhile since i python-ed
+# Smells like extract
 @asset
 def taxi_trips_file() -> None: # type annotation
     # docstring
@@ -35,3 +38,63 @@ def taxi_zones_file() -> None:
 
     with open(constants.TAXI_ZONES_FILE_PATH, 'wb') as output_file:
         output_file.write(raw_zones.content) # csv
+
+# smells like Load
+@asset(
+    deps=['taxi_trips_file'] # this is essentially dbt ref() function 
+)
+def taxi_trips() -> None: 
+    '''
+        The raw taxi trips dataset, loaded into a DuckDB database
+    '''
+
+    sql_query = '''
+        create or replace table trips as (
+            select
+
+                VendorID as vendor_id,
+                PULocationID as pickup_zone_id,
+                DOLocationID as dropoff_zone_id,
+                RatecodeID as rate_code_id,
+                payment_type as payment_type,
+                tpep_dropoff_datetime as dropoff_datetime,
+                tpep_pickup_datetime as pickup_datetime,
+                trip_distance as trip_distance,
+                passenger_count as passenger_count,
+                total_amount as total_amount
+
+            from 'data/raw/taxi_trips_2023-03.parquet'        
+        
+        );
+    '''
+
+    # connection 
+    # apparently duck db allows for directly querying from a file 
+    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE")) 
+    conn.execute(sql_query)
+
+
+@asset(
+    deps=['taxi_zones_file']
+)
+def taxi_zones() -> None:
+    '''
+    
+    '''
+
+    sql_query = f'''
+        create or replace table zones as (
+            select 
+
+                LocationID as zone_id,
+                zone,
+                borough
+                the_geom as geometry
+
+            from '{constants.TAXI_ZONES_FILE_PATH}'
+        
+        );
+    '''
+
+    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"))
+    conn.execute(sql_query)

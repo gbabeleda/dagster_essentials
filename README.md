@@ -71,3 +71,7 @@ Okay so lesson 3 tldr.
 
 Lesson 4: dependencies
 - downstream vs upstream
+
+Did a little load into a duckdb databaes from a file. Apparently thats a thing. Wonder how that works with postgres/the other databases/data warehouses
+
+The deps argument(?) to the @asset decorator is just the _ref function in dbt
