@@ -79,7 +79,7 @@ def taxi_trips() -> None:
 )
 def taxi_zones() -> None:
     '''
-    
+        The taxi zones dataset, loaded into DuckDB
     '''
 
     sql_query = f'''
@@ -88,7 +88,7 @@ def taxi_zones() -> None:
 
                 LocationID as zone_id,
                 zone,
-                borough
+                borough,
                 the_geom as geometry
 
             from '{constants.TAXI_ZONES_FILE_PATH}'
