@@ -2,11 +2,12 @@ import requests
 from . import constants
 from dagster import asset 
 
+# comments for myself its been awhile since i python-ed
 @asset
 def taxi_trips_file() -> None: # type annotation
     '''
-        The raw parquet files for the taxi trips dataset. Source from NYC Open Data portal
-    '''
+        The raw parquet files for the taxi trips dataset. Source from NYC Open Data portal 
+    ''' # docstring
 
 
     month_to_fetch = '2023-03'
