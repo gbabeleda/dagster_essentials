@@ -61,3 +61,13 @@ def cookie_dough(dry_ingredients, wet_ingredients):
 Defined my first asset. Looks like the E part of ELT. 
 
 After defining the asset in code, you need to materialize it to run the assets function and creates the asset by persisting results in storage
+
+Okay so lesson 3 tldr. 
+- how to define an asset.
+- what are the componenets of an asset
+- how to materialize an asset thru dagster ui
+- dagster run ui
+- made two assets taxi_trips_file.parquet and taxi_zones_file.csv
+
+Lesson 4: dependencies
+- downstream vs upstream
