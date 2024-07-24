@@ -75,3 +75,12 @@ Lesson 4: dependencies
 Did a little load into a duckdb databaes from a file. Apparently thats a thing. Wonder how that works with postgres/the other databases/data warehouses
 
 The deps argument(?) to the @asset decorator is just the _ref function in dbt
+
+Asset organization tip: separate assets into diff files by their purpose. i.e. put analysis-focused assets in a different file the assets that ingest data
+
+I made a mapppp
+
+The analytic assets in the metrics.py is essentially transform components. 
+
+Were moving on to definition objects
+
