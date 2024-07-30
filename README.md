@@ -84,3 +84,16 @@ The analytic assets in the metrics.py is essentially transform components.
 
 Were moving on to definition objects
 
+The definitions object lives in the top level init.py of the dagster project. You can only have one definitions object for one code location. It uses the 
+
+`__init__.py` serves several purposes in Python:
+- It indicates that the directory it is present in should be treated as a Python package
+- It can be used to initialize package-level data
+- It can be used to import specific functions or classes to make them easily accessible when the package is imported
+
+
+
+
+Imperative vs Declarative
+- dagster, sql is declarative. you tell what the final output is
+- imperative you tell it what to do
