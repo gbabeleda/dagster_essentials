@@ -117,26 +117,3 @@ def trips_by_week() -> None:
 
     result.to_csv(constants.TRIPS_BY_WEEK_FILE_PATH, index=False)
 
-    # conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"))
-
-    # query = '''
-    #     select
-
-        
-    #         count(*) as num_trips,    
-    #         passenger_count,
-    #         total_amouint,
-    #         trip_distance
-
-    #     from trips
-
-    # '''
-
-
-    # trips_by_week = 
-
-
-
-
-    # with open(constants.TRIPS_BY_WEEK_FILE_PATH, 'w') as output_file:
-    #     output_file.write()
