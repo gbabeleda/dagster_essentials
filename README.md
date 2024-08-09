@@ -130,7 +130,25 @@ Notes:
 
 Dagsters goal is to be a single pane of glass. Thus, it needs to know about services and systems used in the data pipelines, like cloud storage or a data warehouse
 
+Encourages: 
+- DRY
+- Testing in development of data pipelines
 
+Connections can be swapped with local databases and external connections can be represented differently for each environment. A replica of prod can be modeled and used in development to take the guessing out of building and making changes to your pipelines
+
+Example:
+When an ETL pipeline fetches data from an API, it ingests it into a database, and updates a dashboard. Resources could be
+- API
+- S3 to store API response
+- Data warehouse account the data is ingest into
+- BI tool the dashboard was made in
+
+When configuring resources, it is best practice to load configurations and secrets into your programs from environment variables. 
+- `.env` file is a standard for project-level environment variables and should not be committed to git, as it often contains passwords
+
+By using `EnvVar` instead of `os.getenv` you can dynamically customize a resource configuration without having to restart the dagster webserver
+
+Resource input into aaset function with type hint to note that its a resource
 
 
 
