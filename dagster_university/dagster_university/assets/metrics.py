@@ -79,31 +79,35 @@ def trips_by_week(database: DuckDBResource) -> None:
 
     result = pd.DataFrame()
 
-    while current_date < end_date:
-        current_date_str = current_date.strftime(constants.DATE_FORMAT)
+    # doing it this way just opens one connection and avoids repeatedly opening and closing connections
+    # might cause connection timeout if too long
+    # might have issues with transactions? 
+    # might hog resources
+    with database.get_connection() as conn:
+        while current_date < end_date:
+            current_date_str = current_date.strftime(constants.DATE_FORMAT)
 
-        query = f"""
-        select
-            vendor_id, total_amount, trip_distance, passenger_count
-        from trips
-        where pickup_datetime >= '{current_date_str}' and pickup_datetime < '{current_date_str}'::date + interval '1 week'
-        """
-
-        with database.get_connection() as conn:
+            query = f"""
+            select
+                vendor_id, total_amount, trip_distance, passenger_count
+            from trips
+            where pickup_datetime >= '{current_date_str}' and pickup_datetime < '{current_date_str}'::date + interval '1 week'
+            """
+        # with database.get_connection() as conn: 
             data_for_week = conn.execute(query).fetch_df()
 
-        aggregate = data_for_week.agg({
-            "vendor_id": "count",
-            "total_amount": "sum",
-            "trip_distance": "sum",
-            "passenger_count": "sum"
-        }).rename({"vendor_id": "num_trips"}).to_frame().T # type: ignore
+            aggregate = data_for_week.agg({
+                "vendor_id": "count",
+                "total_amount": "sum",
+                "trip_distance": "sum",
+                "passenger_count": "sum"
+            }).rename({"vendor_id": "num_trips"}).to_frame().T # type: ignore
 
-        aggregate["period"] = current_date
+            aggregate["period"] = current_date
 
-        result = pd.concat([result, aggregate])
+            result = pd.concat([result, aggregate])
 
-        current_date += timedelta(days=7)
+            current_date += timedelta(days=7)
 
     # clean up the formatting of the dataframe
     result['num_trips'] = result['num_trips'].astype(int)
