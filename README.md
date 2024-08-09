@@ -159,3 +159,13 @@ Resource input into aaset function with type hint to note that its a resource
 Imperative vs Declarative
 - dagster, sql is declarative. you tell what the final output is
 - imperative you tell it what to do
+
+With syntax
+- used for resource management
+- used a lot in file i/o but not limited to that
+- useful also to connect to database, i know i learned this before but i am rusty
+- for database, ensures a connection is properly clsoed after were done using it 
+
+Decorators
+- modify and enhance functions or classes without directly changing their source code. 
+- powerful feature for meta programming

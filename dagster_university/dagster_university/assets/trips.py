@@ -7,7 +7,6 @@ from dagster import asset
 
 # comments for myself its been awhile since i python-ed
 
-
 # This corresponds to Extract
 @asset
 def taxi_trips_file() -> None: # type annotation
