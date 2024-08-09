@@ -1,11 +1,14 @@
 import requests
+from dagster_duckdb import DuckDBResource # new import after resource definition
 from . import constants
 from dagster import asset 
-import duckdb
-import os
+# import duckdb
+# import os
 
 # comments for myself its been awhile since i python-ed
-# Smells like extract
+
+
+# This corresponds to Extract
 @asset
 def taxi_trips_file() -> None: # type annotation
     # docstring
@@ -39,11 +42,13 @@ def taxi_zones_file() -> None:
     with open(constants.TAXI_ZONES_FILE_PATH, 'wb') as output_file:
         output_file.write(raw_zones.content) # csv
 
-# smells like Load
+
+
+# This corresponds to Load in ETL
 @asset(
     deps=['taxi_trips_file'] # this is essentially dbt ref() function 
 )
-def taxi_trips() -> None: 
+def taxi_trips(database: DuckDBResource) -> None: #
     '''
         The raw taxi trips dataset, loaded into a DuckDB database
     '''
@@ -66,18 +71,21 @@ def taxi_trips() -> None:
             from 'data/raw/taxi_trips_2023-03.parquet'        
         
         );
-    '''
+    ''' # apparently duck db allows for directly querying from a file 
 
-    # connection 
-    # apparently duck db allows for directly querying from a file 
-    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE")) 
-    conn.execute(sql_query)
+    # connection old
+    # conn = duckdb.connect(os.getenv("DUCKDB_DATABASE")) 
+    # conn.execute(sql_query)
 
+    # connection new, uses with syntax, envvar, and dagster resources
+    # get_connection() is a DuckDBResource method
+    with database.get_connection() as conn: 
+        conn.execute(sql_query)
 
 @asset(
     deps=['taxi_zones_file']
 )
-def taxi_zones() -> None:
+def taxi_zones(database: DuckDBResource) -> None:
     '''
         The taxi zones dataset, loaded into DuckDB
     '''
@@ -96,5 +104,5 @@ def taxi_zones() -> None:
         );
     '''
 
-    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"))
-    conn.execute(sql_query)
+    with database.get_connection() as conn: 
+        conn.execute(sql_query)
