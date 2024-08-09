@@ -1,7 +1,9 @@
-### Learning Log
+# Learning Log
 
 Comfortable with unix-based systems when coding, so setup WSL2 on my personal machine, using Ubuntu cos im basic
 
+
+## 2: Prerequisite and Setup 
 Installed python3 and pip on the Ubuntu VM
 
 ```
@@ -44,7 +46,7 @@ Notes from the terminal logs:
 - for persistent infromation across sessions, set environment variable DAGSTER_HOME to a directory
 
 
-Moved on to Lesson 3: Software-defined assets
+## 3: Software-defined assets
 
 Dagster Software-Defined Asset (DSA) 
 - asset decorator: a function decorator REVIEW THIS
@@ -69,33 +71,64 @@ Okay so lesson 3 tldr.
 - dagster run ui
 - made two assets taxi_trips_file.parquet and taxi_zones_file.csv
 
-Lesson 4: dependencies
-- downstream vs upstream
+## 4: Asset Dependencies
+An asset can have upstream or downstream dependencies
 
-Did a little load into a duckdb databaes from a file. Apparently thats a thing. Wonder how that works with postgres/the other databases/data warehouses
+Example: 
+```
+@asset(
+    deps = ['upstream_asset_a', 'upstream_asset_b']
+)
+def some_function():
+```
 
-The deps argument(?) to the @asset decorator is just the _ref function in dbt
+Notes: 
+- dependencies can be implicit (asset was used as inputs for another asset) or explicit (asset dependencies were define using the )
+- The deps argument for the asset decorator is essentially just the `ref` function in dbt
+- Best practices for asset organization includes separating assets into different files by their role/purpose (ETL vs Analysis)
+- Did a little load into a duckdb databaes from a file. Apparently thats a thing. Wonder how that works with postgres/the other databases/data warehouses
 
-Asset organization tip: separate assets into diff files by their purpose. i.e. put analysis-focused assets in a different file the assets that ingest data
+## 5: Definitions & Code Locations
 
-I made a mapppp
+A `Definitions` object is located in the top-level `__init__.py` in a dagster project. It is where you tell Dagster where to find your "definitions" for that particular Dagster Project. A definition is stuff like `assets`, which we have gone over, as well as other stuff like `resources`, `schedules`, and `sensors`.
 
-The analytic assets in the metrics.py is essentially transform components. 
+Its essentially the central configuration point of the entire dagster project
 
-Were moving on to definition objects
+Example:
 
-The definitions object lives in the top level init.py of the dagster project. You can only have one definitions object for one code location. It uses the 
+```
+defs = Definitions(
+    assets = [asset_1, *group_of_assets],
+    schedules = [some_schedule],
+    sensors = [some_sensor],
+    jobs = [some_job],
+    resources = {
+        "some_resource" : some_resource
+    }
+)
+```
+
+This Definitions object maps to a code location. TLDR: 1:1 Definitions Object: Code Location. 
+
+The purpose of the code location(s) is that multiple Dagster projects can be isolated from each other without requiring multiple deployments. 
+
+What the hell does multiple deployments mean?
+
+What worked for me to understand what that is: 
+- You have multiple teams managing their own Dagster projects. Or even the same team managing Dagster projects representing different aspects of the business whether that be different sections of a pipeline (ETL vs ML Ops), different departments, etc
+- If we do it in different repos its a pain in the ass to make sure they adhere to everything you want
+- If you want to make them all into one repository, having multiple code locations means that if you make a change to one you dont need downtime on the others
+
+Notes:
 
 `__init__.py` serves several purposes in Python:
 - It indicates that the directory it is present in should be treated as a Python package
 - It can be used to initialize package-level data
 - It can be used to import specific functions or classes to make them easily accessible when the package is imported
 
-Its essentially the central configuration point of the entire dagster project
+## 6: Resources
 
-Okay now i need to learn more about deployments? Slightly confusing
-
-
+Dagsters goal is to be a single pane of glass. Thus, it needs to know about services and systems used in the data pipelines, like cloud storage or a data warehouse
 
 
 
@@ -103,9 +136,7 @@ Okay now i need to learn more about deployments? Slightly confusing
 
 
 
-
-
-
+## Random Notes
 
 Imperative vs Declarative
 - dagster, sql is declarative. you tell what the final output is
