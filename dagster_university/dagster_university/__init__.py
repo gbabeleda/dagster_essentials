@@ -3,6 +3,8 @@ from dagster import Definitions, load_assets_from_modules
 
 from .assets import metrics, trips
 
+from .resources import database_resource
+
 trip_assets = load_assets_from_modules([trips])
 metric_assets = load_assets_from_modules([metrics])
 
@@ -10,5 +12,9 @@ metric_assets = load_assets_from_modules([metrics])
 # the * is called the unpacking operator. Used to unpack elements of an iterable
 # combines all elements from both lists into a single list
 defs = Definitions(
-    assets=[*trip_assets, *metric_assets] 
+    assets=[*trip_assets, *metric_assets],
+    resources= {
+        "database" : database_resource,
+
+    }
 )
