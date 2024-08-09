@@ -91,6 +91,19 @@ The definitions object lives in the top level init.py of the dagster project. Yo
 - It can be used to initialize package-level data
 - It can be used to import specific functions or classes to make them easily accessible when the package is imported
 
+Its essentially the central configuration point of the entire dagster project
+
+Okay now i need to learn more about deployments? Slightly confusing
+
+
+
+
+
+
+
+
+
+
 
 
 
